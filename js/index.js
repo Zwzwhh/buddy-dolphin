@@ -1,0 +1,68 @@
+$(()=>{
+    //婴童纱布服装，礼品盒装设置鼠标悬停事件
+    $(".dropdownKid")
+        .hover(function(){
+            $("#1").toggleClass("dropdownMenu1")
+        });
+    $(".dropdownGift")
+        .hover(function(){
+            $("#2").toggleClass("dropdownMenu1")
+        })
+    //banner轮播
+    var LIWIDTH=1920,
+        timer=null,
+        moved=0
+    var $ul=$("[data-load=banner-imgs]")//banner图
+            $ul.css("width",LIWIDTH*3);
+    var $ulInds=$("[data-load=bannerInds]");//导航小圆点
+        $ulInds.children().first().addClass("hover");
+    function move(){
+        //防动画、定时器叠加
+        $ul.stop(true);
+        $ul.animate({
+            left:-LIWIDTH*moved-250
+        },0,function(){
+            if(moved==2){
+                moved=0;
+                $ul.css("left",-250);
+            }
+            $ulInds.children(`:eq(${moved})`).addClass("hover")
+                .siblings().removeClass("hover");
+            })
+    }
+    timer=setInterval(()=>{//定时器
+        moved++;
+        move();
+    },5000);
+        $ulInds.on("mouseover","li",e=>{//小圆点鼠标移入
+            moved=$(e.target).index();
+            move();
+        })
+    $("div.banner").hover(
+        ()=>clearInterval(timer),
+        ()=>timer=setInterval(()=>{
+            moved++;
+            move();
+        },5000)
+    );
+    $("[data-move=right]").click(e=>{
+        //防动画/定时器叠加
+        e.preventDefault();
+        if(!$ul.is(":animated")){
+        moved++;
+        move();
+    }
+    })
+    $("[data-move=left]").click(e=>{
+        //防动画/定时器叠加
+        e.preventDefault();
+        if(!$ul.is(":animated")){
+        if(moved==0){
+            $ul.css("left",-LIWIDTH*3-250)
+            moved=2
+        }
+        moved--;
+        move();
+            }
+         })
+});
